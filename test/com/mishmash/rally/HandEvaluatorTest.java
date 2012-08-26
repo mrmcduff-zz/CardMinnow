@@ -143,7 +143,9 @@ public class HandEvaluatorTest {
             he.evaluate(handArray[i]);
             assertEquals("Failed on iteration " + i + ". ", 
                     handTypeArray[i], handArray[i].getHandType());
-            assertArrayEquals("Failed on type " + handTypeArray[i], importantMap.get(handArray[i]).toArray(), handArray[i].getImportantCards().toArray());
+            assertArrayEquals("Failed on iteration " + i + " with type " + handTypeArray[i],
+                   importantMap.get(handArray[i]).toArray(), 
+                   handArray[i].getImportantCards().toArray());
         }
         
         assertArrayEquals(twoPairHand.getSecondImportantCards().toArray(), twoPairOther.toArray());
@@ -376,6 +378,16 @@ public class HandEvaluatorTest {
         HandEvaluator.FiveCardHand noStraight = 
                 he.getBestStraight(he.sortHand(new Hand(bugList)));
         assertEquals(Hand.HandType.HIGH_CARD, noStraight.type);
+    }
+    
+    @Test
+    public void testGetCorrectStraightFlushRegression() {
+        List<Card> bugList = Interpreter.interpret("w, As, 7s, 6s, 5s, 4s, 3s, 2s");
+        List<Card> bestSfList = Interpreter.interpret("7s, 6s, 5s, 4s");
+        HandEvaluator.FiveCardHand sfHand = 
+                he.getBestStraightFlush(he.sortHand(new Hand(bugList)));
+        assertEquals(Hand.HandType.STRAIGHT_FLUSH, sfHand.type);
+        assertArrayEquals(bestSfList.toArray(), sfHand.importantList.toArray());
     }
 
     /**

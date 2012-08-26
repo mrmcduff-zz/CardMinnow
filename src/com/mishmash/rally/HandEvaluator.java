@@ -70,7 +70,7 @@ public class HandEvaluator {
             hand.setHandType(bestFive.type);
             hand.setEvaluated(true);
             hand.setImportantCards(bestFive.importantList);
-            hand.setImportantCards(bestFive.otherList);
+            hand.setSecondImportantCards(bestFive.otherList);
             
         } // end if we have a valid hand
     }
@@ -154,7 +154,6 @@ public class HandEvaluator {
         Hashtable<Integer, List<Card>> copyTable = 
                 (Hashtable<Integer, List<Card>>) simpleHand.pairLists.clone();
         
-        
         switch(compliment) {
         case 4:
             // At the moment, we don't evaluate the second highest card for 
@@ -220,7 +219,7 @@ public class HandEvaluator {
                     bestSet = tempSet;
                 } else if ((tempSet.size() == bestSet.size()) && (tempSet.size() > 0) ) {
                     Card tempTest = tempSet.get(0);
-                    Card bestTest = tempSet.get(0);
+                    Card bestTest = bestSet.get(0);
                     if (tempTest.getValue() > bestTest.getValue()) {
                         bestSet = tempSet;
                     }
@@ -313,7 +312,7 @@ public class HandEvaluator {
                     // The chain is broken, so we start over with the current card if there
                     // are no jokers, or the card after the gap if there is a joker.
                     answer.clear();
-                    if (withJoker) {
+                    if (withJoker && passedGapAlready) {
                         if (jokerGapIndex > 0) {
                             // We have to ensure we've moved forward
                             // before we move back.
