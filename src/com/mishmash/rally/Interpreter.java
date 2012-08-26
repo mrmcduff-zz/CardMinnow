@@ -27,12 +27,11 @@ public class Interpreter {
         List<Card> cardsWritten = new ArrayList<Card>();
         String [] tokens = tokenize(line);
         List<String> badTokens = getBadTokens(tokens);
-        if (badTokens.size() == 0) {
-            // Remember that this line can throw as well.
-            cardsWritten = convertStringsToCards(tokens);
-        } else {
-            throw new IllegalArgumentException(getErrorString(tokens));
-        }
+        // Remember that this line can throw as well.
+        cardsWritten = convertStringsToCards(tokens, badTokens);
+        if (badTokens.size() > 0) {
+            throw new IllegalArgumentException(getErrorString(badTokens));
+        } 
         
         return cardsWritten;
     }
@@ -54,7 +53,7 @@ public class Interpreter {
         return badTokens;
     }
     
-    public static List<Card> convertStringsToCards(String[] goodTokens) throws IllegalArgumentException {
+    public static List<Card> convertStringsToCards(String[] goodTokens, List<String> badTokens) throws IllegalArgumentException {
         List<Card> cards = new ArrayList<Card>();
         
         for (String token : goodTokens) {
@@ -125,16 +124,16 @@ public class Interpreter {
         }
     }
     
-    public static String getErrorString(String [] badTokens) {
+    public static String getErrorString(List<String> badTokens) {
         StringBuilder sb = new StringBuilder();
         sb.append(ERROR_POLITE);
         int count = 0;
         for (String s : badTokens) {
-            if (count > 0 && badTokens.length > 2) {
+            if (count > 0 && badTokens.size() > 2) {
                 sb.append(", ");
             }
             
-            if (count >= 1 && count == badTokens.length - 1) {
+            if (count >= 1 && count == badTokens.size() - 1) {
                 if (count == 1) {
                     sb.append(" ");
                 }

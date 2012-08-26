@@ -29,7 +29,8 @@ public class Hand {
             return this.value;
         }
         
-        public String getDescriptionString() {
+        @Override
+        public String toString() {
             switch(this) {
             case HIGH_CARD:
                 return "high";
@@ -184,120 +185,124 @@ public class Hand {
         StringBuilder sb = new StringBuilder();
         Card highCard = null;
         Card otherCard = null;
-        if (this.importantCards != null && this.secondImportantCards != null &&
-                this.importantCards.size() > 0) {
-            // henceforth, highCard can never be null.
-            highCard = this.importantCards.get(0);
-            
-            if (this.secondImportantCards.size() > 0) {
-                // otherCard, however, can remain null.
-                otherCard = this.secondImportantCards.get(0);
-            }
-            
-            final String space = " ";
-            final String of = " of ";
-            final String pluralizer = "s";
-            final String comma = ", ";
-            final String andString = " and ";
-            final String over = " over ";
-            final String royalFlush = "**ROYAL FLUSH**";
-            final String highString = "-high ";
-            final String lucky = ". Someone's feeling lucky";
-            switch(myType) {
-            case HIGH_CARD:
-                sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
-                sb.append(space);
-                sb.append(myType);
-                break;
-            case PAIR:
-                sb.append(CardUtils.capitalizeWord(myType.toString()));
-                sb.append(of);
-                sb.append(highCard.getValueString());
-                sb.append(pluralizer);
-                break;
-            case TWO_PAIR:
-                if (otherCard != null) {
-                    sb.append(CardUtils.capitalizeWord(myType.toString()));
-                    sb.append(comma);
-                    sb.append(highCard.getValueString());
-                    sb.append(pluralizer);
-                    sb.append(andString);
-                    sb.append(otherCard.getValueString());
-                    sb.append(pluralizer);
-                } else {
-                    String twoPairErrorString = "Invalid two pair created. ";
-                    throw new IllegalStateException(twoPairErrorString);
+        if (this.isValid()) {
+            if (this.importantCards != null && this.secondImportantCards != null &&
+                    this.importantCards.size() > 0) {
+                // henceforth, highCard can never be null.
+                highCard = this.importantCards.get(0);
+                
+                if (this.secondImportantCards.size() > 0) {
+                    // otherCard, however, can remain null.
+                    otherCard = this.secondImportantCards.get(0);
                 }
-                break;
-            case THREE_OF_A_KIND:
-                sb.append(CardUtils.capitalizeWord(myType.toString()));
-                sb.append(space);
-                sb.append(highCard.getValueString());
-                sb.append(pluralizer);
-                break;
-            case STRAIGHT:
-                sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
-                sb.append(myType.toString());
-                break;
-            case FLUSH:
-                sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
-                sb.append(myType.toString());
-                sb.append(of);
-                sb.append(highCard.getSuit());
-                sb.append(pluralizer);
-                break;
-            case FULL_HOUSE:
-                if (otherCard != null) {
-                    sb.append(CardUtils.capitalizeWord(myType.toString()));
-                    sb.append(comma);
-                    sb.append(highCard.getValueString());
-                    sb.append(pluralizer);
-                    sb.append(over);
-                    sb.append(otherCard.getValueString());
-                    sb.append(pluralizer);
-                } else {
-                    String fullHouseErrorString = "Invalid full house created. ";
-                    throw new IllegalStateException(fullHouseErrorString);
-                }
-                break;
-            case FOUR_OF_A_KIND:
-                sb.append(CardUtils.capitalizeWord(myType.toString()));
-                sb.append(space);
-                sb.append(highCard.getValueString());
-                sb.append(pluralizer);
-                break;
-            case STRAIGHT_FLUSH:
-                if (highCard.getValue() == Card.MAX_CARD_VALUE) {
-                    return royalFlush;
-                } else {
+                
+                final String space = " ";
+                final String of = " of ";
+                final String pluralizer = "s";
+                final String comma = ", ";
+                final String andString = " and ";
+                final String over = " over ";
+                final String royalFlush = "**ROYAL FLUSH**";
+                final String highString = "-high ";
+                final String lucky = ". Someone's feeling lucky";
+
+                switch(myType) {
+                case HIGH_CARD:
                     sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
-                    sb.append(highString);
+                    sb.append(space);
+                    sb.append(myType);
+                    break;
+                case PAIR:
+                    sb.append(CardUtils.capitalizeWord(myType.toString()));
+                    sb.append(of);
+                    sb.append(highCard.getValueString());
+                    sb.append(pluralizer);
+                    break;
+                case TWO_PAIR:
+                    if (otherCard != null) {
+                        sb.append(CardUtils.capitalizeWord(myType.toString()));
+                        sb.append(comma);
+                        sb.append(highCard.getValueString());
+                        sb.append(pluralizer);
+                        sb.append(andString);
+                        sb.append(otherCard.getValueString());
+                        sb.append(pluralizer);
+                    } else {
+                        String twoPairErrorString = "Invalid two pair created. ";
+                        throw new IllegalStateException(twoPairErrorString);
+                    }
+                    break;
+                case THREE_OF_A_KIND:
+                    sb.append(CardUtils.capitalizeWord(myType.toString()));
+                    sb.append(space);
+                    sb.append(highCard.getValueString());
+                    sb.append(pluralizer);
+                    break;
+                case STRAIGHT:
+                    sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
+                    sb.append(myType.toString());
+                    break;
+                case FLUSH:
+                    sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
                     sb.append(myType.toString());
                     sb.append(of);
                     sb.append(highCard.getSuit());
+                    break;
+                case FULL_HOUSE:
+                    if (otherCard != null) {
+                        sb.append(CardUtils.capitalizeWord(myType.toString()));
+                        sb.append(comma);
+                        sb.append(highCard.getValueString());
+                        sb.append(pluralizer);
+                        sb.append(over);
+                        sb.append(otherCard.getValueString());
+                        sb.append(pluralizer);
+                    } else {
+                        String fullHouseErrorString = "Invalid full house created. ";
+                        throw new IllegalStateException(fullHouseErrorString);
+                    }
+                    break;
+                case FOUR_OF_A_KIND:
+                    sb.append(CardUtils.capitalizeWord(myType.toString()));
+                    sb.append(space);
+                    sb.append(highCard.getValueString());
                     sb.append(pluralizer);
+                    break;
+                case STRAIGHT_FLUSH:
+                    if (highCard.getValue() == Card.MAX_CARD_VALUE) {
+                        return royalFlush;
+                    } else {
+                        sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
+                        sb.append(highString);
+                        sb.append(myType.toString());
+                        sb.append(of);
+                        sb.append(highCard.getSuit());
+                    }
+                    break;
+                case FIVE_OF_A_KIND:
+                    sb.append(CardUtils.capitalizeWord(myType.toString()));
+                    sb.append(space);
+                    sb.append(highCard.getValueString());
+                    sb.append(pluralizer);
+                    sb.append(lucky);
+                    break;
+                default:
+                    throw new IllegalStateException("Switched to an invalid handtype enum value.");
                 }
-                break;
-            case FIVE_OF_A_KIND:
-                sb.append(CardUtils.capitalizeWord(myType.toString()));
-                sb.append(space);
-                sb.append(highCard.getValueString());
-                sb.append(pluralizer);
-                sb.append(lucky);
-                break;
-            default:
-                throw new IllegalStateException("Switched to an invalid handtype enum value.");
+            } else {
+                if (this.importantCards == null) {
+                    throw new IllegalStateException("ImportantCards were null");
+                } else if (this.importantCards.size() == 0){
+                    throw new IllegalStateException("ImportantCards were an empty set. This hand" +
+                            " should be invalid.");
+                } else {
+                    throw new IllegalStateException("The SecondImportantCards were null.");
+                }
             }
         } else {
-            if (this.importantCards == null) {
-                throw new IllegalStateException("ImportantCards were null");
-            } else if (this.importantCards.size() == 0){
-                throw new IllegalStateException("ImportantCards were an empty set. This hand" +
-                		" should be invalid.");
-            } else {
-                throw new IllegalStateException("The SecondImportantCards were null.");
-            }
+            throw new IllegalStateException("Trying to evaluate an invalid hand.");
         }
+        
         return sb.toString();
     }
     

@@ -6,6 +6,7 @@ package com.mishmash.rally;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -139,8 +140,8 @@ public class InterpreterTest {
         
         String[] bt2 = { "xxx", "y" };
         String hfe2 = Interpreter.ERROR_POLITE + "xxx or y";
-        assertEquals(handFormattedError, Interpreter.getErrorString(badTokens));
-        assertEquals(hfe2, Interpreter.getErrorString(bt2));
+        assertEquals(handFormattedError, Interpreter.getErrorString(Arrays.asList(badTokens)));
+        assertEquals(hfe2, Interpreter.getErrorString(Arrays.asList(bt2)));
     }
 
 }
