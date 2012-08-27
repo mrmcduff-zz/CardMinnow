@@ -44,13 +44,20 @@ public class CardMinnowShell {
     private final String EXPLAIN = 
             "CardMinnow can evaluate any set of cards for its optimal 5-card poker hand.\n" +
     		"Every card must be unique, however, so you can't have two aces of spades, for instance.\n" +
+    		"\n"+
     		"I can understand something like 12h, qh, or Qh to be the Queen of Hearts.\n" +
     		"I'm bad at reading, though, so I won't understand you if you type 'Queen of Hearts'.\n" +
+    		"\n"+
     		"No matter how many cards you enter, I evaluate for the best five card hand.\n" +
     		"If you enter 'as, ks, qs, js, 10s, 9s, 8s', I'll find the royal flush.\n" +
-    		"Jokers don't count towards evaluation except in a single-card hand, \n" +
+    		"\n"+
+    		"The joker doesn't count towards evaluation except in a single-card hand, \n" +
     		"so 'w ks qs js 10s' is a king-high straight flush, not a royal flush.\n" +
+    		"\n"+
     		"Separate your card entries by spaces, commas, or semicolons.\n";
+    
+    private final String WRITE_SOMETHING = 
+            "You have to write something or I won't know what to evaluate.\n";
     
     // This is the only error value that means "quit now"
     private final int EXIT_VALUE = -1;
@@ -159,6 +166,9 @@ public class CardMinnowShell {
             bw.flush();
             // This is the only return value that means "quit now."
             numErrors = EXIT_VALUE;
+        } else if (trimmed.equals("")) {
+            bw.write(WRITE_SOMETHING);
+            bw.flush();
         } else {
             try {
                 Hand hand = new Hand(Interpreter.interpret(trimmed));

@@ -2,7 +2,7 @@ package com.mishmash.rally;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -30,9 +30,9 @@ public class HandEvaluator {
         // This inner class is essentially a struct, so all member variables are public.
         public boolean hasJoker = false;
         public boolean isValid = false;
-        public Hashtable<Integer, List<Card>> pairLists = new Hashtable<Integer, List<Card>>();
-        public Hashtable<Card.Suit, List<Card>> flushLists = new Hashtable<Card.Suit, List<Card>>();
-        public Hashtable<Card, List<Card>> straightLists = new Hashtable<Card, List<Card>>();
+        public HashMap<Integer, List<Card>> pairLists = new HashMap<Integer, List<Card>>();
+        public HashMap<Card.Suit, List<Card>> flushLists = new HashMap<Card.Suit, List<Card>>();
+        public HashMap<Card, List<Card>> straightLists = new HashMap<Card, List<Card>>();
     }
     
     /**
@@ -210,8 +210,8 @@ public class HandEvaluator {
         // overkill to verify that this cast worked, given that SimplifiedHand
         // is an inner class of HandEvaluator.
         @SuppressWarnings("unchecked")
-        Hashtable<Integer, List<Card>> copyTable = 
-                (Hashtable<Integer, List<Card>>) simpleHand.pairLists.clone();
+        HashMap<Integer, List<Card>> copyMap = 
+                (HashMap<Integer, List<Card>>) simpleHand.pairLists.clone();
         
         switch(compliment) {
         case 4:
@@ -222,11 +222,11 @@ public class HandEvaluator {
         case 3:
             // Then the best hand we can have is two pair.
             
-            if (copyTable != null) {
+            if (copyMap != null) {
                 // just a sanity check, then i'm removing the best set from the 
                 // copy table
-                copyTable.remove(Integer.valueOf(fch.importantList.get(0).getValue()));
-                fch.otherList = getBestNaturalCollection(copyTable);
+                copyMap.remove(Integer.valueOf(fch.importantList.get(0).getValue()));
+                fch.otherList = getBestNaturalCollection(copyMap);
             }
             
             if (fch.otherList.size() == 2) {
@@ -237,9 +237,9 @@ public class HandEvaluator {
             break;
         case 2:
             // then we could, in theory, have a full house.
-            if (copyTable != null) {
-                copyTable.remove(Integer.valueOf(fch.importantList.get(0).getValue()));
-                fch.otherList = getBestNaturalPair(copyTable);
+            if (copyMap != null) {
+                copyMap.remove(Integer.valueOf(fch.importantList.get(0).getValue()));
+                fch.otherList = getBestNaturalPair(copyMap);
             }
             
             if (fch.otherList.size() == 2) {
@@ -270,20 +270,20 @@ public class HandEvaluator {
     /**
      * Gets the best 'natural' (as in no wild cards) collection from the given table.
      * 
-     * @param table
-     * The Integer-List table pairing card values to the number of cards found at that value.
+     * @param pairLists
+     * The Integer-List map pairing card values to the number of cards found at that value.
      * 
      * @return
      * A list containing the cards of the best collection, or an empty list if no such
      * collection exists.
      * 
      */
-    private List<Card> getBestNaturalCollection(Hashtable<Integer, List<Card>> table) {
+    private List<Card> getBestNaturalCollection(HashMap<Integer, List<Card>> pairLists) {
         List<Card> bestSet = new ArrayList<Card>();
-        List<Integer> sortList = Collections.list(table.keys());
+        List<Integer> sortList = new ArrayList<Integer>(pairLists.keySet());
         Collections.sort(sortList, Collections.reverseOrder());
         for (Integer i : sortList) {
-            List<Card> tempSet = table.get(i);
+            List<Card> tempSet = pairLists.get(i);
             if (null != tempSet) {
                 if (tempSet.size() > bestSet.size()) {
                     bestSet = tempSet;
@@ -302,20 +302,20 @@ public class HandEvaluator {
     /**
      * Gets the best natural pair available from the table. Useful to find
      * a secondary pair. This won't ever find three-of-a-kinds, four-of-a-kinds, etc.
-     * @param table
+     * @param copyMap
      * The Integer-List of cards table to search.
      * 
      * @return
      * The best pair available, or an empty list if there are no pairs.
      */
-    private List<Card> getBestNaturalPair(Hashtable<Integer, List<Card>> table) {
+    private List<Card> getBestNaturalPair(HashMap<Integer, List<Card>> copyMap) {
         List<Card> bestPair = new ArrayList<Card>();
-        List<Integer> sortList = Collections.list(table.keys());
+        List<Integer> sortList = new ArrayList<Integer>(copyMap.keySet());
         Collections.sort(sortList, Collections.reverseOrder());
 
         for (Integer i: sortList) {
             boolean addNewPair = false;
-            List<Card> tempSet = table.get(i);
+            List<Card> tempSet = copyMap.get(i);
             if (null != tempSet) {
                 if (bestPair.size() == 2) {
                     if (tempSet.size() >= 2) {
