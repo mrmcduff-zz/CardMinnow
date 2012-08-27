@@ -4,10 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Hashtable;
 
 public class CardUtils {
     
+    /**
+     * Convenience function to capitalize only the first letter of a
+     * string.
+     * 
+     * @param originalWord
+     * The word/string to be capitalized.
+     * 
+     * @return
+     * The capitalized string.
+     */
     public static String capitalizeWord(String originalWord) {
         // Using plus-equals on strings is usually bad, but 
         // it just felt like overkill to use a StringBuilder for this.
@@ -21,6 +30,13 @@ public class CardUtils {
         return answer;
     }
     
+    /**
+     * Convenience function for testing. Gets a list of cards
+     * containing the entire deck.
+     * 
+     * @return
+     * The whole deck.
+     */
     public static List<Card> getWholeDeck() {
         List<Card> deck = new ArrayList<Card>();
         deck.addAll(getSuit(Card.Suit.SPADES));
@@ -31,6 +47,18 @@ public class CardUtils {
         return deck;
     }
     
+    /**
+     * A convenience function for getting an entire suit. 
+     * Useful for testing (and for getting the whole deck).
+     * If you ask for the 'suit' of jokers, you get a list
+     * with just one joker.
+     * 
+     * @param suit
+     * The suit to get.
+     * 
+     * @return
+     * Ace through deuce of the desired suit.
+     */
     public static List<Card> getSuit(Card.Suit suit) {
         List<Card> wholeSuit = new ArrayList<Card>();
         
@@ -61,6 +89,21 @@ public class CardUtils {
         return wholeSuit;
     }
     
+    /**
+     * Convenience function for getting the top N cards from a sorted list.
+     * Useful for shortening long hands, or picking out the best cards from
+     * a seven-card flush, or only a pair, etc.
+     * 
+     * @param entryList
+     * The list to trim down.
+     * 
+     * @param n
+     * The number to remain in the list.
+     * 
+     * @return
+     * An n-long list if the original was at least n long. If not, we return
+     * an empty list.
+     */
     public static List<Card> getTopNCards(List<Card> entryList, int n) {
         List<Card> retVal = new ArrayList<Card>();
         if (entryList != null && entryList.size() >= n) {

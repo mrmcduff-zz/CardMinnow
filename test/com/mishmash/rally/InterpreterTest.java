@@ -6,12 +6,8 @@ package com.mishmash.rally;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import org.junit.Before;
 import org.junit.Test;
-
 import com.mishmash.rally.Card;
 import com.mishmash.rally.Interpreter;
 
@@ -45,15 +41,6 @@ public class InterpreterTest {
         }
         assertTrue(thrown);
         
-        // Remember that nothing says an interpreter needs to return a list of
-        // VALID cards, just a list of cards.
-        String weirdString = "w W 0h";
-        Card j1 = new Card();
-        Card i1 = new Card();
-        i1.setSuit(Card.Suit.HEARTS);
-        Card[] weirdArray = { j1, j1, i1 };
-        assertArrayEquals(weirdArray, Interpreter.interpret(weirdString).toArray());
-
     }
 
     /**
@@ -130,18 +117,4 @@ public class InterpreterTest {
 
     }
     
-    /**
-     * Test method for {@link com.mishmash.rally.Interpreter#getErrorString(java.lang.String[])}.
-     */    
-    @Test
-    public void testGetErrorString() {
-        String[] badTokens = { "Huh?", "kk10", "ahjs", "2h2", "6hh" };
-        String handFormattedError = Interpreter.ERROR_POLITE + "Huh?, kk10, ahjs, 2h2, or 6hh";
-        
-        String[] bt2 = { "xxx", "y" };
-        String hfe2 = Interpreter.ERROR_POLITE + "xxx or y";
-        assertEquals(handFormattedError, Interpreter.getErrorString(Arrays.asList(badTokens)));
-        assertEquals(hfe2, Interpreter.getErrorString(Arrays.asList(bt2)));
-    }
-
 }

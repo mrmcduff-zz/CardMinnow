@@ -18,11 +18,11 @@ public class CardMinnowShell {
             "type 'rules' or 'help'. \n" +
             "If you'd like to quit, type 'quit' or 'exit'.\n";
             
-    private final String STANDARD_PROMPT = "Input hand or command: \n";
+    private final String STANDARD_PROMPT = "Input hand or command:\n";
     private final String ERR_PROMPT = "Try again:\n";
-    private final String MANY_ERR_PROMPT = "It seems like you're having trouble with your input. " +
-            "If you'd like to know more about the rules of CardMinnow, just type 'rules' or 'help'. " +
-            "I'm only a simple program and can't understand everything that you users can.\n";
+    private final String MANY_ERR_PROMPT = "It seems like you're having trouble with your input. \n" +
+            "If you'd like to know more about the rules of CardMinnow, just type 'rules' or 'help'. \n" +
+            "I'm only a simple program and can't understand everything that users can. Have mercy.\n";
     
     private final String HELP = "help";
     private final String RULES = "rules";
@@ -30,8 +30,20 @@ public class CardMinnowShell {
     private final String QUIT = "quit";
     private final String GOODBYE = "Goodbye, and thanks for playing CardMinnow.\n";
     private final String YOU_HAVE = "Your best hand is: ";
+    private final String INVALID_HAND = "That's an invalid hand. " +
+    		"Remember, you're not allowed to have duplicates.\n";
     
-    private final String EXPLAIN = "explain\n";
+    private final String EXPLAIN = 
+            "CardMinnow can evaluate any set of cards for its optimal 5-card poker hand.\n" +
+    		"Every card must be unique, however, so you can't have two aces of spades, for instance.\n" +
+    		"I can understand something like 12h, qh, or Qh to be the Queen of Hearts.\n" +
+    		"I'm bad at reading, though, so I won't understand you if you type 'Queen of Hearts'.\n" +
+    		"No matter how many cards you enter, I evaluate for the best five card hand.\n" +
+    		"If you enter 'as, ks, qs, js, 10s, 9s, 8s', I'll find the royal flush.\n" +
+    		"Jokers don't count towards evaluation, " +
+    		"so 'w ks qs js 10s' is a king-high straight flush, not a royal flush.\n" +
+    		"Separate your card entries by spaces, commas, or semicolons.\n";
+    
     private final int EXIT_VALUE = -1;
     
     public CardMinnowShell() {}
@@ -96,14 +108,19 @@ public class CardMinnowShell {
             try {
                 HandEvaluator he = new HandEvaluator();
                 Hand hand = new Hand(Interpreter.interpret(trimmed));
-                he.evaluate(hand);
-                bw.write(YOU_HAVE);
-                bw.write(hand.getDescription());
-                bw.write("\n");
+                if (hand.isValid()) {
+                    he.evaluate(hand);
+                    bw.write(YOU_HAVE);
+                    bw.write(hand.getDescription());
+                    bw.write("\n");
+                    numErrors = 0;
+                } else {
+                    bw.write(INVALID_HAND);
+                    numErrors = oldErrors +1;
+                }
                 bw.flush();
-                numErrors = 0;
             } catch (IllegalArgumentException iae) {
-                bw.write(iae.toString());
+                bw.write(iae.getMessage() + '\n');
                 numErrors = oldErrors + 1;
             }
         }

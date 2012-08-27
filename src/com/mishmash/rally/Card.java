@@ -1,7 +1,22 @@
 package com.mishmash.rally;
 
+/**
+ * Our basic item in a card game, and the building blocks of our hands.
+ * A card has a numeric value and a suit, and can verify that it is valid.
+ * 
+ * @author mrmcduff
+ *
+ */
 public class Card implements Comparable<Card>{
     
+    /**
+     * This enumeration describes a suit. It contains methods for getting
+     * the 'value' of a suit, which creates an ordering. It also overrides
+     * the toString method so you can print your suit.
+     * 
+     * @author mrmcduff
+     * 
+     */
     public enum Suit {
         CLUBS(1),
         DIAMONDS(2),
@@ -10,10 +25,20 @@ public class Card implements Comparable<Card>{
         JOKER(5);
         
         private int suitValue;
+        
+        /**
+         * Private constructor for the enum.
+         * 
+         * @param suitValue Sets the suit value.
+         */
         private Suit(int suitValue) {
             this.suitValue = suitValue;
         }
         
+        /**
+         * Getter for suit value.
+         * @return the suitValue field.
+         */
         public int getSuitValue() {
             return this.suitValue;
         }
@@ -51,29 +76,65 @@ public class Card implements Comparable<Card>{
     public static final String KING_STRING = "king";
     public static final String ACE_STRING = "ace";
     
+    // There is no card lower than a two
     public static final int MIN_CARD_VALUE = 2;
+    // There is no card higher than an ace
     public static final int MAX_CARD_VALUE = 14;
     
+    // The numeric value of the card.
     private int value = 0;
+    
+    // The suit of the card.
     private Suit suit = Suit.JOKER;
     
-    public Card() {
-        
-    }
+    /**
+     * No-arg constructor for a card. Useful as a quick way to
+     * create a joker.
+     */
+    public Card() {}
     
+    /**
+     * Standard constructor for a card.
+     * 
+     * @param value
+     * Numeric value, which must be between 2 and 14, inclusive,
+     * to be valid.
+     * 
+     * @param suit
+     * The card's suit.
+     */
     public Card(int value, Suit suit) {
         setValue(value);
         setSuit(suit);
     }
     
+    /**
+     * Getter for the numeric value of the card.
+     * 
+     * @return The value field.
+     */
     public int getValue () {
         return this.value;
     }
     
+    /**
+     * Getter for the suit of the card.
+     * 
+     * @return The suit field.
+     */
     public Suit getSuit () {
         return this.suit;
     }
     
+    /**
+     * Setter for the numeric value of the card. Defends
+     * against invalid values.
+     * 
+     * @param value 
+     * The new numeric value.
+     * 
+     * @return True if the value was correctly set. Otherwise false.
+     */
     public boolean setValue(int value) {
         if (value >= MIN_CARD_VALUE && value <= MAX_CARD_VALUE) {
             this.value = value;
@@ -83,10 +144,22 @@ public class Card implements Comparable<Card>{
         }
     }
     
+    /**
+     * Setter for the suit.
+     * 
+     * @param suit
+     * The suit to set.
+     */
     public void setSuit(Suit suit) {
         this.suit = suit;
     }
     
+    /**
+     * Checks whether the card is valid. The seventeen of clubs, for instance
+     * is invalid. Any numeric value is valid for a joker.
+     * 
+     * @return True if the card has a valid value-suit combination.
+     */
     public boolean isValid() {
         if (this.suit == Suit.JOKER) {
             return true;
@@ -97,6 +170,11 @@ public class Card implements Comparable<Card>{
         }        
     }
     
+    /**
+     * Gets a pretty-printable string for the value of the card.
+     * 
+     * @return A printable string for the card's value.
+     */
     public String getValueString() {
         if (this.isValid()) {
             if (this.suit == Suit.JOKER) {
@@ -136,6 +214,18 @@ public class Card implements Comparable<Card>{
         return "";
     }
 
+    /**
+     * Override for the compareTo method which will allow us to sort
+     * cards. Note that the suits have an order, all jokers are equal, and
+     * jokers are higher than all other cards.
+     * 
+     * @param Card 
+     * The other card to which to compare <b>this</b>.
+     * 
+     * @return
+     * A positive value if <b>this</b> is greater than <b>other</b>, 
+     * negative if <b>this</b> is lesser, and zero if this.equals(other).
+     */
     @Override
     public int compareTo(Card other) {
         if (this.getSuit() == Suit.JOKER) {
@@ -163,6 +253,9 @@ public class Card implements Comparable<Card>{
         }
     }
     
+    /**
+     * Overriding the equals method.
+     */
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -183,6 +276,9 @@ public class Card implements Comparable<Card>{
         }
     }
     
+    /**
+     * We overrode equals, so we have to override hashCode.
+     */
     @Override
     public int hashCode() {
         final int goodEnoughForHorseshoesPrime = 37;
@@ -193,6 +289,9 @@ public class Card implements Comparable<Card>{
         }
     }
     
+    /**
+     * A toString override.
+     */
     @Override
     public String toString() {
         return getValueString() + " " + getSuit().toString();

@@ -6,14 +6,11 @@ package com.mishmash.rally;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.mishmash.rally.Card;
@@ -33,9 +30,9 @@ public class HandEvaluatorTest {
     
     private final Card[] emptyArray = {};
 
-    public Dictionary<Integer, List<Card>> pairLists;
-    public Dictionary<Card.Suit, List<Card>> flushLists; 
-    public Dictionary<Card, List<Card>> straightLists;
+//    public Dictionary<Integer, List<Card>> pairLists;
+//    public Dictionary<Card.Suit, List<Card>> flushLists; 
+//    public Dictionary<Card, List<Card>> straightLists;
     
     
 
@@ -45,9 +42,6 @@ public class HandEvaluatorTest {
     @Before
     public void setUp() throws Exception {
         he = new HandEvaluator();
-        this.pairLists = new Hashtable<Integer, List<Card>>();
-        this.flushLists = new Hashtable<Card.Suit, List<Card>>();
-        this.straightLists = new Hashtable<Card, List<Card>>();
     }
     
     
@@ -160,6 +154,9 @@ public class HandEvaluatorTest {
     @Test
     public void testSortHand() {
         
+        Hashtable<Integer, List<Card>> pairLists = new Hashtable<Integer, List<Card>>();
+        Hashtable<Card.Suit, List<Card>> flushLists = new Hashtable<Card.Suit, List<Card>>();
+        Hashtable<Card, List<Card>> straightLists = new Hashtable<Card, List<Card>>();
         List<Card> twoList = Interpreter.interpret("2s, 2h");
         List<Card> threeList = Interpreter.interpret("3s, 3h, 3d");
         List<Card> spadeList = Interpreter.interpret("3s, 2s");
@@ -265,7 +262,6 @@ public class HandEvaluatorTest {
     public void testGetBestCollection() {
         List<Card> handList = Interpreter.interpret("ah, as, kc, jd, 10d, 10c, 10s, 2d, 2h, 2s");
         HandEvaluator.SimplifiedHand testHand = he.sortHand(new Hand(handList));
-        HandEvaluator.FiveCardHand fch = he.new FiveCardHand();
         List<Card> tens = Interpreter.interpret("10s, 10d, 10c");
         List<Card> aces = Interpreter.interpret("as, ah");
         
@@ -276,7 +272,6 @@ public class HandEvaluatorTest {
         assertArrayEquals(aces.toArray(), testFch.otherList.toArray());
         
         List<Card> jokerHandList = Interpreter.interpret("w, js, 10s, 10h");
-        List<Card> jackList = Interpreter.interpret("js");
         List<Card> tenList = Interpreter.interpret("10s, 10h");
         HandEvaluator.FiveCardHand jokerFch = he.getBestCollection(he.sortHand(new Hand(jokerHandList)));
         assertEquals(Hand.HandType.THREE_OF_A_KIND, jokerFch.type);
@@ -299,7 +294,6 @@ public class HandEvaluatorTest {
         assertFalse(fourKind.hasJoker);
         assertArrayEquals(fourList.toArray(), fourKind.importantList.toArray());
         assertArrayEquals(emptyArray, fourKind.otherList.toArray());
-        
         
     }
 

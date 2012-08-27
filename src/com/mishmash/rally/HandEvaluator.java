@@ -2,15 +2,30 @@ package com.mishmash.rally;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+/**
+ * This is the all-knowing, all-powerful evaluation class of CardMinnow. Allowing 
+ * a wild card and hands that can be as large as a whole deck introduces more difficulty
+ * to picking out a five card hand and requires more read-throughs of the cards. Sorting
+ * saves us some work and allows some optimization.
+ * 
+ * @author mrmcduff
+ *
+ */
 public class HandEvaluator {
     
     public final int SCORING_HAND_SIZE = 5;
     
+    /**
+     * A struct-type class to hold all the cards of a hand in an easier-to-use object.
+     * Once items are stored here, we can pick through the organized lists easily to find
+     * the scoring hand.
+     * 
+     * @author mrmcduff
+     *
+     */
     public class SimplifiedHand {
         // This inner class is essentially a struct, so all member variables are public.
         public boolean hasJoker = false;
@@ -20,6 +35,12 @@ public class HandEvaluator {
         public Hashtable<Card, List<Card>> straightLists = new Hashtable<Card, List<Card>>();
     }
     
+    /**
+     * A struct-type class representing a scoring hand.
+     * 
+     * @author mrmcduff
+     *
+     */
     public class FiveCardHand {
         public Hand.HandType type = Hand.HandType.HIGH_CARD;
         public boolean hasJoker = false;
@@ -27,6 +48,14 @@ public class HandEvaluator {
         public List<Card> otherList = new ArrayList<Card>();
     }
     
+    /**
+     * Method to evaluate a hand. This is the 'master' method of this class.
+     * Checks each of the possible hand types to see what the input hand contains
+     * and picks the best. It sets its data in the input hand.
+     * 
+     * @param hand
+     * The hand to be evaluated. We evaluate by using hand.setType().
+     */
     public void evaluate(Hand hand) {
         SimplifiedHand simpleHand = sortHand(hand);
         FiveCardHand bestFive = new FiveCardHand();
@@ -60,7 +89,7 @@ public class HandEvaluator {
                             // We don't need to check any more, because the hands
                             // Three of a kind, two pair, and one pair are all taken
                             // care of in our first step (getBestCollection).
-                            // Once we're here, that must be the best possible hand.
+                            // Once we're here, bestFive must be the best possible hand.
                         } // end else for finding a flush
                     } // end if lower than a full house.
                 } // end else where we haven't found a straight flush
@@ -69,6 +98,12 @@ public class HandEvaluator {
             // bestFive is now the best possible hand.
             hand.setHandType(bestFive.type);
             hand.setEvaluated(true);
+            
+            // There is one special case, where the hand contains only a joker, which
+            // we haven't covered.
+            if (bestFive.type == Hand.HandType.HIGH_CARD && bestFive.importantList.isEmpty()) {
+                bestFive.importantList.add(new Card());
+            }
             hand.setImportantCards(bestFive.importantList);
             hand.setSecondImportantCards(bestFive.otherList);
             
@@ -151,6 +186,11 @@ public class HandEvaluator {
             --compliment;
         }
         
+        // Clone only returns an object, so we have to cast here.
+        // I don't usually suppress warnings, but for this project it felt
+        // overkill to verify that this cast worked, given that SimplifiedHand
+        // is an inner class of HandEvaluator.
+        @SuppressWarnings("unchecked")
         Hashtable<Integer, List<Card>> copyTable = 
                 (Hashtable<Integer, List<Card>>) simpleHand.pairLists.clone();
         

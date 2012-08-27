@@ -21,17 +21,26 @@ public class Interpreter {
     public final static String[] FACE_ARRAY = { ACE_STRING, KING_STRING, QUEEN_STRING,
             JACK_STRING };
     public final static List<String> FACE_LIST = Arrays.asList( FACE_ARRAY );
+    public final static char[] SUIT_ARRAY = { SPADES_CHAR, HEARTS_CHAR, DIAMONDS_CHAR, CLUBS_CHAR, JOKER_CHAR };
     
     
     public static List<Card> interpret(String line) throws IllegalArgumentException{
         List<Card> cardsWritten = new ArrayList<Card>();
         String [] tokens = tokenize(line);
+        
         List<String> badTokens = getBadTokens(tokens);
-        // Remember that this line can throw as well.
-        cardsWritten = convertStringsToCards(tokens, badTokens);
+        // These are the bad tokens that are simply incorrect formatting.
         if (badTokens.size() > 0) {
             throw new IllegalArgumentException(getErrorString(badTokens));
-        } 
+        }
+        
+        badTokens.clear();
+        // Remember that this line can throw as well.
+        cardsWritten = convertStringsToCards(tokens, badTokens);
+        // These tokens have the right look, but don't make sense as cards.
+        if (badTokens.size() > 0) {
+            throw new IllegalArgumentException(getErrorString(badTokens));
+        }
         
         return cardsWritten;
     }
@@ -58,7 +67,12 @@ public class Interpreter {
         
         for (String token : goodTokens) {
             // This line can throw
-            cards.add(convertTokenToCard(token));
+            Card card = convertTokenToCard(token);
+            if (card.isValid()) {
+                cards.add(card);
+            } else {
+                badTokens.add(token);
+            }
         }
         return cards;
     }
@@ -69,24 +83,31 @@ public class Interpreter {
         
         String littleToken = token.toLowerCase();
         char suitChar = littleToken.charAt(token.length() - 1);
-        if (suitChar != JOKER_CHAR) {
-            String valuePart = littleToken.substring(0, token.length() - 1);
-            int value = 0;
-            
-            if (FACE_LIST.contains(valuePart)) {
-                value = getFaceValue(valuePart);
-            } else {
-                try {
-                    value = Integer.parseInt(valuePart);
-                } catch (NumberFormatException nfe) {
-                    throw new IllegalArgumentException(token + 
-                            " was an invalid token that either passed validation or was never validated.");
+
+        String suitString = String.copyValueOf(SUIT_ARRAY);
+        if (suitString.indexOf(suitChar) < 0) {
+            throw new IllegalArgumentException("'" + token + "'" +
+                    " doesn't contain enough data for me to understand it. I need a value and a suit.");
+        } else {
+            if (suitChar != JOKER_CHAR) {
+                String valuePart = littleToken.substring(0, token.length() - 1);
+                int value = 0;
+                
+                if (FACE_LIST.contains(valuePart)) {
+                    value = getFaceValue(valuePart);
+                } else {
+                    try {
+                        value = Integer.parseInt(valuePart);
+                    } catch (NumberFormatException nfe) {
+                        throw new IllegalArgumentException(token + 
+                                " was an invalid token that either passed validation or was never validated.");
+                    }
                 }
-            }
-            // This line throws if you've given me a bad suit.
-            Card.Suit suit = getSuitFromChar(suitChar);
-            answer = new Card(value, suit);
-        } 
+                // This line throws if you've given me a bad suit.
+                Card.Suit suit = getSuitFromChar(suitChar);
+                answer = new Card(value, suit);
+            } 
+        }
         
         return answer;
     }
@@ -129,6 +150,7 @@ public class Interpreter {
         sb.append(ERROR_POLITE);
         int count = 0;
         for (String s : badTokens) {
+            
             if (count > 0 && badTokens.size() > 2) {
                 sb.append(", ");
             }
@@ -139,8 +161,12 @@ public class Interpreter {
                 }
                 sb.append("or ");
             }
-            
+            sb.append("'");
             sb.append(s);
+            sb.append("'");
+            if (count == badTokens.size() - 1) {
+                sb.append(".");
+            }
             ++count;
         }
         return sb.toString();
