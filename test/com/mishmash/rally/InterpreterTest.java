@@ -66,7 +66,7 @@ public class InterpreterTest {
     }
 
     /**
-     * Test method for {@link com.mishmash.rally.Interpreter#getBadTokens(java.lang.String[])}.
+     * Test method for {@link com.mishmash.rally.Interpreter#getBadFormatTokens(java.lang.String[])}.
      */
     @Test
     public void testGetBadTokens() {
@@ -76,9 +76,9 @@ public class InterpreterTest {
         
         String[] badFromMixed = { "badness", "what?" };
         List<String> emptyList = new ArrayList<String>();
-        assertEquals(emptyList, Interpreter.getBadTokens(goodTokens));
-        assertArrayEquals(badTokens, Interpreter.getBadTokens(badTokens).toArray());
-        assertArrayEquals(badFromMixed, Interpreter.getBadTokens(goodAndBad).toArray());
+        assertEquals(emptyList, Interpreter.getBadFormatTokens(goodTokens));
+        assertArrayEquals(badTokens, Interpreter.getBadFormatTokens(badTokens).toArray());
+        assertArrayEquals(badFromMixed, Interpreter.getBadFormatTokens(goodAndBad).toArray());
     }
 
     /**
