@@ -5,6 +5,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A utilities class with only static methods to perform some simple but common actions in this
+ * class.
+ * 
+ * @author mrmcduff
+ *
+ */
 public class CardUtils {
     
     /**

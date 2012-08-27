@@ -110,6 +110,15 @@ public class HandEvaluator {
         } // end if we have a valid hand
     }
     
+    /**
+     * Sorts through all the cards of a hand to make it much easier
+     * and faster to determine its value.
+     * @param hand
+     * The 'unfiltered' hand to be sorted.
+     * 
+     * @return
+     * The SimplifiedHand struct storing the Hand's data in a more convenient way.
+     */
     public SimplifiedHand sortHand(Hand hand) {
         SimplifiedHand simpleHand = new SimplifiedHand();
         if (hand.isValid()) {
@@ -170,10 +179,20 @@ public class HandEvaluator {
             // lists of all flushes { Ah, Qh, 9h }, { 3s } indexed by their suit, and
             // lists of all straights indexed by their starting (highest) card
         } 
-
         return simpleHand;
     }
     
+    /**
+     * Gets the best 'collection' hand available. Collection hands are those made up of n-tuples,
+     * so pair, two pair, three of a kind, full house, four of a kind, and five of a kind. High card
+     * falls into this category by default.
+     * 
+     * @param simpleHand
+     * The SimplifiedHand to be checked.
+     * 
+     * @return
+     * A FiveCardHand with the best possible collection.
+     */
     public FiveCardHand getBestCollection(SimplifiedHand simpleHand) {
         FiveCardHand fch = new FiveCardHand();
         fch.hasJoker = simpleHand.hasJoker;
@@ -248,6 +267,17 @@ public class HandEvaluator {
         return fch;
     }
     
+    /**
+     * Gets the best 'natural' (as in no wild cards) collection from the given table.
+     * 
+     * @param table
+     * The Integer-List table pairing card values to the number of cards found at that value.
+     * 
+     * @return
+     * A list containing the cards of the best collection, or an empty list if no such
+     * collection exists.
+     * 
+     */
     private List<Card> getBestNaturalCollection(Hashtable<Integer, List<Card>> table) {
         List<Card> bestSet = new ArrayList<Card>();
         List<Integer> sortList = Collections.list(table.keys());
@@ -269,6 +299,15 @@ public class HandEvaluator {
         return bestSet;
     }
     
+    /**
+     * Gets the best natural pair available from the table. Useful to find
+     * a secondary pair. This won't ever find three-of-a-kinds, four-of-a-kinds, etc.
+     * @param table
+     * The Integer-List of cards table to search.
+     * 
+     * @return
+     * The best pair available, or an empty list if there are no pairs.
+     */
     private List<Card> getBestNaturalPair(Hashtable<Integer, List<Card>> table) {
         List<Card> bestPair = new ArrayList<Card>();
         List<Integer> sortList = Collections.list(table.keys());
@@ -300,7 +339,16 @@ public class HandEvaluator {
         return bestPair;
     }
 
-    
+    /**
+     * Gets the best available straight from the given SimplifiedHand.
+     * 
+     * @param simpleHand
+     * The simplified hand to search
+     * 
+     * @return
+     * A FiveCardHand struct-class with the best straight hand, or HIGH_CARD if there
+     * is no straight.
+     */
     public FiveCardHand getBestStraight(SimplifiedHand simpleHand) {
         FiveCardHand fch = new FiveCardHand();
         fch.hasJoker = simpleHand.hasJoker;
@@ -319,6 +367,21 @@ public class HandEvaluator {
         return fch;
     }
     
+    /**
+     * Gets a straight from an ordered list with no duplicate <b>values</b>.
+     * 
+     * @param cards
+     * The cards to search.
+     * 
+     * @param withJoker
+     * Whether or not we're working with a wild card, and thus need to 
+     * evaluate straights with gaps.
+     * 
+     * @return
+     * A list with the cards involved in the best possible straight (not
+     * taking into acount straight flushes) from this set. The wild card
+     * is never included in this set.
+     */
     private List<Card> getStraightFromOrderedListWithoutDuplicates(List<Card> cards, boolean withJoker) {
         List<Card> answer = new ArrayList<Card>();
         int minStraightSize = withJoker ? SCORING_HAND_SIZE - 1 : SCORING_HAND_SIZE;
@@ -400,6 +463,19 @@ public class HandEvaluator {
         return answer;
     }
     
+    /**
+     * Gets the best flush from a simplified hand, not taking into account
+     * whether or not the flush is a straight flush. This sorts by highest
+     * card (or highest first two cards, or first three cards, and so on)
+     * in the flush set.
+     * 
+     * @param simpleHand
+     * The SimplifiedHand to search.
+     * 
+     * @return
+     * A FiveCardHand representing the best flush, or a HIGH_CARD hand if
+     * there is no flush.
+     */
     public FiveCardHand getBestFlush(SimplifiedHand simpleHand) {
         FiveCardHand fch = new FiveCardHand();
         fch.hasJoker = simpleHand.hasJoker;
@@ -437,6 +513,17 @@ public class HandEvaluator {
         return fch;
     }
     
+    /**
+     * Compares two flush sets and returns the best available by value, or the first one
+     * if they are equal.
+     * @param first
+     * The first flush set.
+     * @param second
+     * The second flush set.
+     * 
+     * @return
+     * The best of the two inputs, or the first if they are equal.
+     */
     private List<Card> compareFlushesAndReturnBestOrFirst(List<Card> first, List<Card> second) {
         List<Card> winner = first;
         if (first != null) {
@@ -479,7 +566,16 @@ public class HandEvaluator {
         return winner;
     }
 
-    
+    /**
+     * Gets the best straight flush from the input SimplifiedHand.
+     * 
+     * @param simpleHand
+     * The SimplifiedHand to search for a straight flush.
+     * 
+     * @return
+     * The highest ranking straight flus in the input hand, or a HIGH_CARD hand
+     * if no straight flush exists.
+     */
     public FiveCardHand getBestStraightFlush(SimplifiedHand simpleHand) {
         FiveCardHand fch = new FiveCardHand();
         fch.hasJoker = simpleHand.hasJoker;
