@@ -20,6 +20,9 @@ import com.mishmash.rally.HandEvaluator;
 import com.mishmash.rally.Interpreter;
 
 /**
+ * This is the most complicated and involved test class that is where is really bash on the
+ * system as a whole.
+ * 
  * @author mrmcduff
  *
  */

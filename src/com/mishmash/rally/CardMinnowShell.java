@@ -60,6 +60,10 @@ public class CardMinnowShell {
      */
     public CardMinnowShell() {}
     
+    /**
+     * Runs the interactive shell that is the interface for the game. This method
+     * runs until the user types 'exit' or 'quit'.
+     */
     public void runShell() {
         boolean exitRequested = false;
         

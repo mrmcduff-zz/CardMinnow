@@ -1,5 +1,11 @@
 package com.mishmash.rally;
 
+/**
+ * Main class that just runs the program. No logic is contained here.
+ * 
+ * @author mrmcduff
+ *
+ */
 public class Main {
 
     /**
