@@ -17,6 +17,10 @@ import com.mishmash.rally.HandEvaluator;
 import com.mishmash.rally.Interpreter;
 
 /**
+ * Tests some commonly used methods from the Hand class. The most interesting stuff goes on
+ * in HandEvaluator, so that test class is considerably larger, more thorough, and more complicated.
+ * HandEvaluator is also where a lot of the testing of smaller stuff in Hand will happen by default.
+ * 
  * @author mrmcduff
  *
  */
@@ -105,18 +109,6 @@ public class HandTest {
         assertEquals(h2.getHandSize(), 1);
         myCards.add(new Card());
         assertEquals(h2.getHandSize(), 2);
-    }
-
-    /**
-     * Test method for {@link com.mishmash.rally.Hand#getDescription()}.
-     */
-    @Test
-    public void testGetDescription() {
-        HandEvaluator eval = new HandEvaluator();
-        Hand h1 = new Hand(Interpreter.interpret("5s, ah, js, 5h"));
-        eval.evaluate(h1);
-        String expected = "Pair of fives";
-        assertEquals(expected, h1.getDescription());
     }
 
 }

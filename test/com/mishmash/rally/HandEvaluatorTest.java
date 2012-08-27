@@ -26,15 +26,12 @@ import com.mishmash.rally.Interpreter;
 public class HandEvaluatorTest {
     
 
+    // Our object to test, instantiated before each test.
     private HandEvaluator he;
     
+    // This is useful in a lot of tests.
     private final Card[] emptyArray = {};
-
-//    public Dictionary<Integer, List<Card>> pairLists;
-//    public Dictionary<Card.Suit, List<Card>> flushLists; 
-//    public Dictionary<Card, List<Card>> straightLists;
-    
-    
+   
 
     /**
      * @throws java.lang.Exception
@@ -47,6 +44,10 @@ public class HandEvaluatorTest {
     
     
     /**
+     * This is the ultimate test for this project. Tests every kind of hand at least once for proper
+     * evaluation and selection of the right card set/s. We try short hands, long hands, hands that
+     * span an entire deck, hands with a joker, and hands without.
+     * 
      * Test method for {@link com.mishmash.rally.HandEvaluator#evaluate(com.mishmash.rally.Hand)}.
      */
     @Test
@@ -130,6 +131,7 @@ public class HandEvaluatorTest {
         importantMap.put(fiveKindHand, fiveKindImportant);
         importantMap.put(deckHand, deckImportant);
         importantMap.put(deckWithJokerHand, deckWithJokerImportant);
+        
         // Sanity check
         assertEquals(handArray.length, handTypeArray.length);
         
@@ -149,6 +151,8 @@ public class HandEvaluatorTest {
     }
 
     /**
+     * Tests our ability to properly simplify a hand.
+     * 
      * Test method for {@link com.mishmash.rally.HandEvaluator#sortHand(com.mishmash.rally.Hand)}.
      */
     @Test
@@ -203,6 +207,9 @@ public class HandEvaluatorTest {
         
     }
     
+    /**
+     * Ensures that we properly handle bad hands.
+     */
     @Test
     public void testSortBadHand() {
         HandEvaluator.SimplifiedHand testHand = he.sortHand(new Hand(Interpreter.interpret("3h, 3h, 2s")));
@@ -213,6 +220,9 @@ public class HandEvaluatorTest {
         assertEquals(0, testHand.flushLists.size());
     }
     
+    /**
+     * Sorts a pretty complicated hand. This is a bit of an edge case.
+     */
     @Test 
     public void testSortComplicatedHand() {
         // I'm sorting this by myself first because otherwise it would be difficult to figure out
@@ -256,6 +266,7 @@ public class HandEvaluatorTest {
     }
 
     /**
+     * Tests getting the best collection hand.
      * Test method for {@link com.mishmash.rally.HandEvaluator#getBestCollection(com.mishmash.rally.HandEvaluator.SimplifiedHand)}.
      */
     @Test
@@ -298,6 +309,7 @@ public class HandEvaluatorTest {
     }
 
     /**
+     * Tests getting the best straight.
      * Test method for {@link com.mishmash.rally.HandEvaluator#getBestStraight(com.mishmash.rally.HandEvaluator.SimplifiedHand)}.
      */
     @Test
@@ -335,6 +347,10 @@ public class HandEvaluatorTest {
 
     }
     
+    /**
+     * Tests getting straights when wild cards are involved. This is a more complicated case
+     * and worth testing seperately.
+     */
     @Test
     public void testWildStaights() {
         List<Card> outsideStraightList = Interpreter.interpret("w, 10s, 9d, 8c, 7h");
@@ -358,7 +374,7 @@ public class HandEvaluatorTest {
         assertEquals(Hand.HandType.STRAIGHT, competingStraight.type);
         assertArrayEquals(competingWinner.toArray(), competingStraight.importantList.toArray());
         
-     // This one has two paths as well as two competing straights
+        // This one has two paths as well as two competing straights
         List<Card> twoHoleStraightList = Interpreter.interpret("w, ah, ks, kh, jh, 9s, 8d, 7c, 6d, 5c, 4h, 3c");
         HandEvaluator.FiveCardHand twoHoleStraight = he.getBestStraight(he.sortHand(new Hand(twoHoleStraightList)));
         List<Card> twoHoleWinner = Interpreter.interpret("jh, 9s, 8d, 7c");
@@ -366,6 +382,10 @@ public class HandEvaluatorTest {
         assertArrayEquals(twoHoleWinner.toArray(), twoHoleStraight.importantList.toArray());
     }
     
+    /**
+     * Tests for a regression that caused an infinite loop due to how I was 
+     * handling the need to back up and try again when looking for straights with holes.
+     */
     @Test
     public void testJokerGapRegression() {
         List<Card> bugList = Interpreter.interpret("w, ah, 7s, 3h, 2s");
@@ -374,6 +394,10 @@ public class HandEvaluatorTest {
         assertEquals(Hand.HandType.HIGH_CARD, noStraight.type);
     }
     
+    /**
+     * Tests for regression of a bugfix. The old bug would skip one ahead if we had
+     * a wild card in this instance and return a straight of { 6s, 5s, 4s, 3s }.
+     */
     @Test
     public void testGetCorrectStraightFlushRegression() {
         List<Card> bugList = Interpreter.interpret("w, As, 7s, 6s, 5s, 4s, 3s, 2s");
@@ -385,6 +409,7 @@ public class HandEvaluatorTest {
     }
 
     /**
+     * Tests getting the best flush from various types of hands.
      * Test method for {@link com.mishmash.rally.HandEvaluator#getBestFlush(com.mishmash.rally.HandEvaluator.SimplifiedHand)}.
      */
     @Test
@@ -420,6 +445,7 @@ public class HandEvaluatorTest {
     }
 
     /**
+     * Tests getting the best straight flush.
      * Test method for {@link com.mishmash.rally.HandEvaluator#getBestStraightFlush(com.mishmash.rally.HandEvaluator.SimplifiedHand)}.
      */
     @Test

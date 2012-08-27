@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.mishmash.rally.Card;
 
 /**
+ * Tests methods in the Card class.
  * @author mrmcduff
  *
  */

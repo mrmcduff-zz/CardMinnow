@@ -12,6 +12,7 @@ import com.mishmash.rally.Card;
 import com.mishmash.rally.Interpreter;
 
 /**
+ * Tests the tokenization and interpretation of user input.
  * @author mrmcduff
  *
  */
