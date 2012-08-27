@@ -6,8 +6,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * This represents the fundamental purpose of the program, a 'hand' of cards.
+ * A hand is not limited in size, though it must have at least one card and 
+ * contain no duplicates (which effectively limits its size to 53, but if we
+ * change the properties of a deck this will not be the case).
+ * 
+ * @author mrmcduff
+ *
+ */
 public class Hand {
     
+    /**
+     * An enumeration for the different types of hands, given value
+     * according to increasing rank. Has a pretty-printing toString override.
+     * 
+     * @author mrmcduff
+     *
+     */
     public enum HandType {
         HIGH_CARD(0),
         PAIR(1),
@@ -61,23 +77,72 @@ public class Hand {
     
     private HandType type = HandType.HIGH_CARD;
     private boolean isEvaluated = false;
+
+    /**
+     * Each hand must have a set of important cards that define it. For instance,
+     * a PAIR hand would have the defining pair as its most important cards.
+     */
     private List<Card> importantCards = new ArrayList<Card>();
+
+    /**
+     * Some hands require two sets of important cards, and this is the lesser of the
+     * two. For instance, a FULL_HOUSE has three of a kind and a pair. This would 
+     * correspond to the pair.
+     */
     private List<Card> secondImportantCards = new ArrayList<Card>();
+    
+    /**
+     * The actual set of cards for this hand.
+     */
     private List<Card> cards = new ArrayList<Card>();
-    private List<Card> badCards = new ArrayList<Card>();
+    
+    /**
+     * No matter how many cards are in the hand, 
+     * a hand is scored by its best five cards. If there are less
+     * than five cards in the hand, it is impossible to make a 
+     * straight or a flush, but you could still have a pair (or two), high card, 
+     * or three or four of a kind.
+     */
     public static final int FIVE_CARD_DRAW_HAND_SIZE = 5;
+    
+    /**
+     * The class that evaluates all the different possibilities.
+     */
     private HandEvaluator evaluator = new HandEvaluator();
 
+    /**
+     * A default constructor for an empty hand.
+     */
     public Hand() {}
     
+    /**
+     * Constructor setting the list of cards. 
+     * 
+     * @param cards
+     * The cards that make up this hand.
+     */
     public Hand(List<Card> cards) {
         this.cards = cards;
     }
     
+    /**
+     * A convenience function that lets you make the cards out of an array.
+     * Primarily used in testing.
+     * 
+     * @param cards
+     * The cards that make up this hand.
+     */
     public Hand(Card [] cards) {
         this.cards = Arrays.asList(cards);
     }
     
+    /**
+     * Checks to see whether or not this is a valid hand.
+     * 
+     * @return
+     * True if the hand is nonempty, contains no invalid cards, and 
+     * contains no duplicates.
+     */
     public boolean isValid() {
         boolean answer = true;
         
@@ -92,13 +157,11 @@ public class Hand {
                 // All cards must be valid.
                 if (!card.isValid()) {
                     answer = false;
-                    this.badCards.add(card);
                 }
                 
                 // There should be no duplicates.
                 if (!cardSet.add(card)) {
                     answer = false;
-                    this.badCards.add(card);
                 }
             }
         }
@@ -106,10 +169,26 @@ public class Hand {
         return answer;
     }
     
+    /**
+     * Getter for the number of cards in this hand.
+     * 
+     * @return
+     * The number of cards in this hand.
+     */
     public int getHandSize() {
         return this.cards.size();
     }
     
+    /**
+     * Getter for the type of this hand. Note that it
+     * defaults to HandType.HIGH_CARD and doesn't change
+     * without the help of an evaluator. If the hand has not
+     * already been evaluated, it calls its own evaluator to 
+     * get that value before returning an answer.
+     * 
+     * @return
+     * The <b>type</b> field of this hand.
+     */
     public HandType getHandType() {
         if (this.isEvaluated) {
             return this.type;
@@ -119,6 +198,12 @@ public class Hand {
         }
     }
     
+    /**
+     * Getter for the set of all cards contained in this hand.
+     * 
+     * @return
+     * A shallow copy of the set of all cards.
+     */
     public List<Card> getCards() {
         // I want to make a shallow copy to prevent other classes from altering
         // this hand's cards with this method.
@@ -126,40 +211,87 @@ public class Hand {
         return cardArrayList;
     }
     
+    /**
+     * A setter for the handType of this hand.
+     * 
+     * @param handType
+     * The new value to set to the <b>type</b> field.
+     */
     public void setHandType(HandType handType) {
         this.type = handType;
     }
     
+    /**
+     * Setter for the <b>isEvaluated</b> field.
+     * 
+     * @param evaluated
+     */
     public void setEvaluated(boolean evaluated) {
         this.isEvaluated = evaluated;
     }
     
+    /**
+     * Getter for the set of important cards.
+     * 
+     * @return
+     * The most important cards in determining the value of this hand.
+     */
     public List<Card> getImportantCards() {
         return this.importantCards;
     }
     
+    /**
+     * Setter for the important cards.
+     * 
+     * @param importantCards
+     * The most important cards in determining the value of this hand.
+     */
     public void setImportantCards(List<Card> importantCards) {
         if (importantCards != null && listIsInOrder(importantCards)) {
             this.importantCards = importantCards;
         }
     }
     
+    /**
+     * Getter for the set of second most important cards.
+     * This list can be empty.
+     * 
+     * @return
+     * The second most important cards in determining the value of this hand.
+     */
     public List<Card> getSecondImportantCards() {
         return this.secondImportantCards;
     }
     
+    /**
+     * Setter for the second most important cards.
+     * 
+     * @param secondImportantCards
+     * The second most important cards in determining the value of this hand.
+     */
     public void setSecondImportantCards(List<Card> secondImportantCards) {
-        if (secondImportantCards != null) {
+        if (secondImportantCards != null && listIsInOrder(secondImportantCards)) {
             this.secondImportantCards = secondImportantCards;
         }
     }
     
+    /**
+     * Checks to see if a list of cards is allowable as a set of scoring/important
+     * cards. The cards should always be sorted in descending order and there should
+     * be no joker (unless the list contains ONLY a joker).
+     * 
+     * @param inputList
+     * The list to check.
+     * 
+     * @return
+     * True if and only if this list is properly formatted.
+     */
     private boolean listIsInOrder(List<Card> inputList) {
         Card oldCard = null;
         for (Card card : inputList) {
             // All cards must be valid, and a joker can never be part of
-            // a proper list of cards (used for determining rank).
-            if (!card.isValid() && card.getSuit() == Card.Suit.JOKER) {
+            // a proper list of cards unless it is a length one list (used for determining rank).
+            if (!card.isValid() || ( (card.getSuit() == Card.Suit.JOKER) && (inputList.size() > 1) )) {
                 return false;
             } else {
                 // In this case, we're just starting and 
@@ -180,6 +312,17 @@ public class Hand {
         return true;
     }
     
+    /**
+     * Gets a pretty-printable string describing the hand based on its contents.
+     * 
+     * @return
+     * A string suitable for user consumption describing the hand.
+     * 
+     * @throws IllegalStateException
+     * If this hand is in an invalid state for printing. This includes
+     * if the important cards are not set, or if the second important cards are
+     * required but not set.
+     */
     public String getDescription() throws IllegalStateException {
         HandType myType = this.getHandType();
         StringBuilder sb = new StringBuilder();

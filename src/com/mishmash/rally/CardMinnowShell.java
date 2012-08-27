@@ -157,10 +157,8 @@ public class CardMinnowShell {
             numErrors = EXIT_VALUE;
         } else {
             try {
-                HandEvaluator he = new HandEvaluator();
                 Hand hand = new Hand(Interpreter.interpret(trimmed));
                 if (hand.isValid()) {
-                    he.evaluate(hand);
                     bw.write(YOU_HAVE);
                     bw.write(hand.getDescription());
                     bw.write("\n");
