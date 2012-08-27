@@ -4,17 +4,12 @@
 package com.mishmash.rally;
 
 import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Test;
-
 import com.mishmash.rally.Card;
 import com.mishmash.rally.Hand;
-import com.mishmash.rally.HandEvaluator;
-import com.mishmash.rally.Interpreter;
 
 /**
  * Tests some commonly used methods from the Hand class. The most interesting stuff goes on

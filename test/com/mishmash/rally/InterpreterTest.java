@@ -63,7 +63,6 @@ public class InterpreterTest {
         assertArrayEquals(split2, Interpreter.tokenize(raw2));
         assertArrayEquals(split3, Interpreter.tokenize(raw3));
         assertArrayEquals(split4, Interpreter.tokenize(raw4));
-
     }
 
     /**
@@ -115,7 +114,6 @@ public class InterpreterTest {
                 assertTrue("Threw the right type of exception", true);
             }
         }
-
     }
     
 }

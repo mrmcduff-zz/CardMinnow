@@ -111,7 +111,10 @@ public class Interpreter {
      * A list into which to stuff the tokens that make invalid cards, like the 155 of hearts.
      * 
      * @return
+     * A list of cards converted from the input tokens.
+     * 
      * @throws IllegalArgumentException
+     * If any of the input tokens can't be made into cards.
      */
     public static List<Card> convertStringsToCards(String[] goodTokens, List<String> badCardTokens) throws IllegalArgumentException {
         List<Card> cards = new ArrayList<Card>();

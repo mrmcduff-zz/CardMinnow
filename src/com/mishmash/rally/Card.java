@@ -219,7 +219,7 @@ public class Card implements Comparable<Card>{
      * cards. Note that the suits have an order, all jokers are equal, and
      * jokers are higher than all other cards.
      * 
-     * @param Card 
+     * @param other 
      * The other card to which to compare <b>this</b>.
      * 
      * @return
