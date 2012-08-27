@@ -6,6 +6,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
+/**
+ * This class handles the interactive shell prompt that is the interface for the game.
+ * The only logic handled here is whether or not to show an advanced error message, whether
+ * to quit, or to display the rules.
+ * 
+ * @author mrmcduff
+ *
+ */
 public class CardMinnowShell {
     
     private final String INTRODUCTION = "Welcome to CardMinnow, an interactive command " +
@@ -40,12 +48,16 @@ public class CardMinnowShell {
     		"I'm bad at reading, though, so I won't understand you if you type 'Queen of Hearts'.\n" +
     		"No matter how many cards you enter, I evaluate for the best five card hand.\n" +
     		"If you enter 'as, ks, qs, js, 10s, 9s, 8s', I'll find the royal flush.\n" +
-    		"Jokers don't count towards evaluation, " +
+    		"Jokers don't count towards evaluation except in a single-card hand, \n" +
     		"so 'w ks qs js 10s' is a king-high straight flush, not a royal flush.\n" +
     		"Separate your card entries by spaces, commas, or semicolons.\n";
     
+    // This is the only error value that means "quit now"
     private final int EXIT_VALUE = -1;
     
+    /**
+     * Default constructor. Requires no args.
+     */
     public CardMinnowShell() {}
     
     public void runShell() {
@@ -69,7 +81,14 @@ public class CardMinnowShell {
         }
     }
     
-    
+    /**
+     * Prints the introduction to the game into the given buffered writer.
+     * @param bw
+     * A BufferedWriter used to write output to the user.
+     * 
+     * @throws IOException
+     * If one is thrown by the BufferedWriter.
+     */
     private void introduce(BufferedWriter bw) throws IOException{
         if (bw != null) {
             bw.write(INTRODUCTION);
@@ -77,6 +96,17 @@ public class CardMinnowShell {
         }
     }
     
+    /**
+     * Propmts the user for input.
+     * @param bw
+     * A buffered writer into which output is pumped.
+     * 
+     * @param numErrors
+     * The number of consecutive 'bad input' lines from the user.
+     * 
+     * @throws IOException
+     * If the BufferedWriter throws one.
+     */
     private void prompt(BufferedWriter bw, int numErrors) throws IOException {
         if (bw != null) {
             if (numErrors == 0) {
@@ -92,6 +122,27 @@ public class CardMinnowShell {
         }
     }
     
+    /**
+     * Not <i>much</i> evaluation is done here. We check for keywords, then pass the string on
+     * to the Interpreter. If we get exceptions, we catch them and relay the information back
+     * to the user. We do keep track of how many 'bad' items in a row the user inputs to give
+     * slightly different feedback.
+     * 
+     * @param input
+     * The input string from the user.
+     * 
+     * @param bw
+     * A BufferedWriter into which to write output.
+     * 
+     * @param oldErrors
+     * The number of errors in a row that the user has entered.
+     * 
+     * @return
+     * The new number of errors, usually old+1 or 0.
+     * 
+     * @throws IOException
+     * If the BufferedWriter throws one.
+     */
     private int evaluateInput(String input, BufferedWriter bw, int oldErrors) throws IOException {
         String trimmed = input.trim();
         int numErrors = oldErrors;
