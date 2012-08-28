@@ -309,6 +309,30 @@ public class HandEvaluatorTest {
         assertArrayEquals(fourList.toArray(), fourKind.importantList.toArray());
         assertArrayEquals(emptyArray, fourKind.otherList.toArray());
         
+        
+    }
+    
+    /**
+     * Making sure a bug where the getBestNaturalPair part of getBestCollection didn't fail if the
+     * pair was part of a larger set.
+     */
+    @Test
+    public void testFullHouseRegression() {
+        List<Card> bugList = Interpreter.interpret("8h 8d 8c 7h 5h 3s 3d 3c");
+        HandEvaluator.FiveCardHand bugHand = he.getBestCollection(he.sortHand(new Hand(bugList)));
+        List<Card> importantList = Interpreter.interpret("8h 8d 8c");
+        List<Card> otherList=  Interpreter.interpret("3s 3d");
+        assertEquals(Hand.HandType.FULL_HOUSE, bugHand.type);
+        assertArrayEquals(importantList.toArray(), bugHand.importantList.toArray());
+        assertArrayEquals(otherList.toArray(), bugHand.otherList.toArray());
+        
+        List<Card> comparisonList = Interpreter.interpret("8h 8d 8c 7h 7c 3s 3d 3c");
+        HandEvaluator.FiveCardHand comparisonHand = he.getBestCollection(he.sortHand(new Hand(comparisonList)));
+        List<Card> compareImportantList = Interpreter.interpret("8h 8d 8c");
+        List<Card> compareOtherList=  Interpreter.interpret("7h 7c");
+        assertEquals(Hand.HandType.FULL_HOUSE, comparisonHand.type);
+        assertArrayEquals(compareImportantList.toArray(), comparisonHand.importantList.toArray());
+        assertArrayEquals(compareOtherList.toArray(), comparisonHand.otherList.toArray());
     }
 
     /**

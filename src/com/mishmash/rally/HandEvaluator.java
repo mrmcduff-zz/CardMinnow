@@ -330,7 +330,7 @@ public class HandEvaluator {
                 if (addNewPair) {
                     bestPair.clear();
                     bestPair.add(tempSet.get(0));
-                    if (tempSet.size() == 2) {
+                    if (tempSet.size() >= 2) {
                         bestPair.add(tempSet.get(1));
                     }
                 }
