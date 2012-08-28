@@ -29,8 +29,7 @@ public class CardMinnowShell {
     private final String STANDARD_PROMPT = "Input hand or command:\n";
     private final String ERR_PROMPT = "Try again:\n";
     private final String MANY_ERR_PROMPT = "It seems like you're having trouble with your input. \n" +
-            "If you'd like to know more about the rules of CardMinnow, just type 'rules' or 'help'. \n" +
-            "I'm only a simple program and can't understand everything that users can. Have mercy.\n";
+            "If you'd like to know more about the rules of CardMinnow, just type 'rules' or 'help'. \n";
     
     private final String HELP = "help";
     private final String RULES = "rules";
@@ -45,11 +44,11 @@ public class CardMinnowShell {
             "CardMinnow can evaluate any set of cards for its optimal 5-card poker hand.\n" +
     		"Every card must be unique, however, so you can't have two aces of spades, for instance.\n" +
     		"\n"+
-    		"I can understand something like 12h, qh, or Qh to be the Queen of Hearts.\n" +
-    		"I'm bad at reading, though, so I won't understand you if you type 'Queen of Hearts'.\n" +
+    		"CardMinnow can understand something like 12h, qh, or Qh to be the Queen of Hearts.\n" +
+    		"CardMinnow can't truly read, though, so it won't understand 'Queen of Hearts'.\n" +
     		"\n"+
-    		"No matter how many cards you enter, I evaluate for the best five card hand.\n" +
-    		"If you enter 'as, ks, qs, js, 10s, 9s, 8s', I'll find the royal flush.\n" +
+    		"No matter how many cards you enter, CardMinnow evaluates for the best five card hand.\n" +
+    		"If you enter 'as, ks, qs, js, 10s, 9s, 8s', CardMinnow will find the royal flush.\n" +
     		"\n"+
     		"The joker doesn't count towards evaluation except in a single-card hand, \n" +
     		"so 'w ks qs js 10s' is a king-high straight flush, not a royal flush.\n" +
@@ -57,7 +56,7 @@ public class CardMinnowShell {
     		"Separate your card entries by spaces, commas, or semicolons.\n";
     
     private final String WRITE_SOMETHING = 
-            "You have to write something or I won't know what to evaluate.\n";
+            "You have to write something or CardMinnow won't know what to evaluate.\n";
     
     // This is the only error value that means "quit now"
     private final int EXIT_VALUE = -1;

@@ -347,29 +347,40 @@ public class Hand {
                 final String over = " over ";
                 final String royalFlush = "**ROYAL FLUSH**";
                 final String highString = "-high ";
-                final String lucky = ". Someone's feeling lucky";
-
+                final String lucky = ". Someone's feeling lucky.";
+                final String period = ".";
+                final String exclamation = "!";
+                // Six is the only card whose plural requires affixing 'es' rather
+                // than just 's'
+                final String sixPluralizer = "es";
+                // Because I'm going to check this a lot, I'll go ahead and do it now
+                
+                String highPlural = (highCard.getValue() == 6) ? sixPluralizer : pluralizer;
+                String otherPlural = (otherCard != null && otherCard.getValue() == 6) ? sixPluralizer : pluralizer;
                 switch(myType) {
                 case HIGH_CARD:
                     sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
                     sb.append(space);
                     sb.append(myType);
+                    sb.append(period);
                     break;
                 case PAIR:
                     sb.append(CardUtils.capitalizeWord(myType.toString()));
                     sb.append(of);
                     sb.append(highCard.getValueString());
-                    sb.append(pluralizer);
+                    sb.append(highPlural);
+                    sb.append(period);
                     break;
                 case TWO_PAIR:
                     if (otherCard != null) {
                         sb.append(CardUtils.capitalizeWord(myType.toString()));
                         sb.append(comma);
                         sb.append(highCard.getValueString());
-                        sb.append(pluralizer);
+                        sb.append(highPlural);
                         sb.append(andString);
                         sb.append(otherCard.getValueString());
-                        sb.append(pluralizer);
+                        sb.append(otherPlural);
+                        sb.append(period);
                     } else {
                         String twoPairErrorString = "Invalid two pair created. ";
                         throw new IllegalStateException(twoPairErrorString);
@@ -379,27 +390,31 @@ public class Hand {
                     sb.append(CardUtils.capitalizeWord(myType.toString()));
                     sb.append(space);
                     sb.append(highCard.getValueString());
-                    sb.append(pluralizer);
+                    sb.append(highPlural);
+                    sb.append(period);
                     break;
                 case STRAIGHT:
                     sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
                     sb.append(myType.toString());
+                    sb.append(period);
                     break;
                 case FLUSH:
                     sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
                     sb.append(myType.toString());
                     sb.append(of);
                     sb.append(highCard.getSuit());
+                    sb.append(period);
                     break;
                 case FULL_HOUSE:
                     if (otherCard != null) {
                         sb.append(CardUtils.capitalizeWord(myType.toString()));
                         sb.append(comma);
                         sb.append(highCard.getValueString());
-                        sb.append(pluralizer);
+                        sb.append(highPlural);
                         sb.append(over);
                         sb.append(otherCard.getValueString());
-                        sb.append(pluralizer);
+                        sb.append(otherPlural);
+                        sb.append(period);
                     } else {
                         String fullHouseErrorString = "Invalid full house created. ";
                         throw new IllegalStateException(fullHouseErrorString);
@@ -409,24 +424,31 @@ public class Hand {
                     sb.append(CardUtils.capitalizeWord(myType.toString()));
                     sb.append(space);
                     sb.append(highCard.getValueString());
-                    sb.append(pluralizer);
+                    sb.append(highPlural);
+                    sb.append(exclamation);
                     break;
                 case STRAIGHT_FLUSH:
                     if (highCard.getValue() == Card.MAX_CARD_VALUE) {
-                        return royalFlush;
+                        sb.append(royalFlush);
+                        sb.append(space);
+                        sb.append(of);
+                        sb.append(CardUtils.capitalizeWord(highCard.getSuit().toString()));
+                        sb.append(exclamation);
                     } else {
                         sb.append(CardUtils.capitalizeWord(highCard.getValueString()));
                         sb.append(highString);
                         sb.append(myType.toString());
                         sb.append(of);
                         sb.append(highCard.getSuit());
+                        sb.append(exclamation);
                     }
                     break;
                 case FIVE_OF_A_KIND:
                     sb.append(CardUtils.capitalizeWord(myType.toString()));
                     sb.append(space);
                     sb.append(highCard.getValueString());
-                    sb.append(pluralizer);
+                    sb.append(highPlural);
+                    sb.append(exclamation);
                     sb.append(lucky);
                     break;
                 default:
